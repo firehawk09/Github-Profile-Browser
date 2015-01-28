@@ -3,6 +3,7 @@
     function GithubClient(token){
         this.token = token;
         this.members = [];
+        this.repoData = [];
         var self = this;
 
         var GithubRouter = Backbone.Router.extend({
@@ -23,7 +24,9 @@
 
     GithubClient.prototype = {
         URLs: {
-            members: "https://api.github.com/orgs/TIY-Houston-Front-End-Engineering/members"
+            members: "https://api.github.com/orgs/TIY-Houston-Front-End-Engineering/members",
+
+            repoData: "https://api.github.com/users/"
         },
         access_token: function(){
             return "?access_token="+this.token
@@ -49,12 +52,33 @@
             return x;
         },
 
+        getMemberRepos: function(){
+            var x = $.Deferred();
+
+            if (this.repoData.length > 0) {
+                x.resolve(this.repoData);
+            } else {
+                var p = $.get(this.URLs.repoData + this.members[0] + this.access_token());
+                p.then(function(data){
+                    x.resolve(data);
+                    this.repoData = data;
+                })
+            }
+
+            return x;
+        },
+
         loadTemplate: function(name){
             // modify the event context, return only the data
             return $.get("./templates/"+name+".html").then(function(data){ return data;})
         },
 
-        draw: function(){
+        loadRepoTemplate: function(name) {
+            // body...
+            return $.get("./templates/"+name+".html").then(function(data){ return data;})
+        },
+
+        draw1: function(){
             $.when(
                 this.getData(),
                 this.loadTemplate("menu-item")
@@ -63,6 +87,18 @@
                 left_column.innerHTML = _.template(html, { members: members });
             })
         },
+
+        draw2: function(){
+            $.when(
+                this.getMemberRepos(),
+                this.loadRepoTemplate("repo-item")
+            ).then(function(repoData, html){
+                var right_column = document.querySelector(".github-grid > *:nth-child(2)");
+                right_column.innerHTML = _.template(html, { repoData: repoData });
+            })
+        },
+
+        drawRepo: function()
 
         drawUser: function(username){
             alert(username)
