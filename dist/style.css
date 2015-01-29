@@ -851,5 +851,11 @@ img {
 
 body {
   -webkit-transition: opacity .25s ease;
-          transition: opacity .25s ease; }
+          transition: opacity .25s ease;
+  background-color: lightgreen; }
+  body .left {
+    max-width: 12em; }
+  body li {
+    border: 1px solid pink;
+    background-color: lightblue; }
 

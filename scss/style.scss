@@ -48,4 +48,13 @@ img {max-width:100;}
 
 body {
     transition: opacity .25s ease;
+    background-color: lightgreen;
+    .left {
+        max-width: 12em;
+    }
+    li {
+        border: 1px solid pink;
+        background-color: lightblue;
+        // float: left;
+    }
 }
